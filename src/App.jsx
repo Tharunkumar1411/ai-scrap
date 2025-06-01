@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import './App.css'
 import { mock } from './constant'
+import Table from './component/table'
+import Note from './component/Note'
 
 function App() {
   const [inputText, setInputText] = useState('')
   const [submittedText, setSubmittedText] = useState('')
-  const [scrapedData, setScrapedData] = useState(null) // Use mock data if available
+  const [scrapedData, setScrapedData] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [filters, setFilters] = useState({
@@ -104,10 +106,11 @@ function App() {
 
           <button onClick={handleMockData} disabled={loading} style={{
             marginLeft: '8px',}}>
-            {loading ? 'Scraping...' : 'Scrape URL'}
             Try with Mock Data
           </button>
         </form>
+
+        <Note />
 
         {loading && (
           <p style={{ marginTop: '16px', color: '#666' }}>
@@ -193,40 +196,7 @@ function App() {
           </div>
 
           {/* Key Points Table */}
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #ddd' }}>
-              <thead>
-                <tr style={{ backgroundColor: '#f5f5f5' }}>
-                  <th style={{ padding: '12px', color:"#000", textAlign: 'left', border: '1px solid #ddd', width: '30%' }}>
-                    Key Point
-                  </th>
-                  <th style={{ padding: '12px', color:"#000", textAlign: 'left', border: '1px solid #ddd', width: '70%' }}>
-                    Summary
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredKeyPoints?.length > 0 ? (
-                  filteredKeyPoints?.map((point, index) => (
-                    <tr key={index} style={{ borderBottom: '1px solid #ddd' }}>
-                      <td style={{ padding: '12px', border: '1px solid #ddd', verticalAlign: 'top' }}>
-                        <strong>{point}</strong>
-                      </td>
-                      <td style={{ padding: '12px', border: '1px solid #ddd', lineHeight: '1.4' }}>
-                        {scrapedData.summary_for_keypoint[point] || 'No summary available'}
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="2" style={{ padding: '20px', textAlign: 'center', color: '#666', fontStyle: 'italic' }}>
-                      No key points match the current filters
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+         <Table scrapedData={scrapedData} filteredKeyPoints={filteredKeyPoints} />
 
           {/* Source Info */}
           <div style={{ marginTop: '16px', fontSize: '12px', color: '#666' }}>
