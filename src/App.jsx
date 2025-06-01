@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import './App.css'
 import { mock } from './constant'
-import Table from './component/table'
 import Note from './component/Note'
+import Table from './component/Table'
 
 function App() {
   const [inputText, setInputText] = useState('')
