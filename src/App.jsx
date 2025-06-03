@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import './App.css'
-import { mock } from './constant'
-import Note from './component/Note'
 import Table from './component/Table'
+import { BASE_URL } from './utils/constant'
 
 function App() {
   const [inputText, setInputText] = useState('')
@@ -13,11 +12,7 @@ function App() {
   const [filters, setFilters] = useState({
     topic: '',
     searchTerm: ''
-  })
-
-  const handleMockData = () => {
-    setScrapedData(mock.summaryObject)
-  }
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -26,7 +21,7 @@ function App() {
     setError('')
     
     try {
-      const response = await fetch(`http://localhost:8080/api/scrape?url=${inputText}`, {
+      const response = await fetch(`${BASE_URL}/api/scrape?url=${inputText}`, {
         method: 'GET',
       })
       
@@ -35,16 +30,13 @@ function App() {
       }
       
       const data = await response.json()
-      console.log('Scraped data:', data)
-      setScrapedData(data?.summaryObject)
+      setScrapedData(data?.structured)
     } catch (error) {
       console.error('Error fetching scraped data:', error)
       setError('Failed to fetch data. Please check the URL and try again.')
     } finally {
       setLoading(false)
     }
-    
-    console.log('Submitted text:', inputText)
     setInputText('')
   }
 
@@ -103,14 +95,7 @@ function App() {
           <button type="submit" disabled={loading}>
             {loading ? 'Scraping...' : 'Scrape URL'}
           </button>
-
-          <button onClick={handleMockData} disabled={loading} style={{
-            marginLeft: '8px',}}>
-            Try with Mock Data
-          </button>
         </form>
-
-        <Note />
 
         {loading && (
           <p style={{ marginTop: '16px', color: '#666' }}>
@@ -199,11 +184,11 @@ function App() {
          <Table scrapedData={scrapedData} filteredKeyPoints={filteredKeyPoints} />
 
           {/* Source Info */}
-          <div style={{ marginTop: '16px', fontSize: '12px', color: '#666' }}>
+          {/* <div style={{ marginTop: '16px', fontSize: '12px', color: '#666' }}>
             <strong>Source:</strong> <a href={scrapedData.source_url} target="_blank" rel="noopener noreferrer">
               {scrapedData.source_url}
             </a>
-          </div>
+          </div> */}
         </div>
       )}
     </>
