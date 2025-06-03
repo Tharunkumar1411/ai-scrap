@@ -15,7 +15,8 @@ function App() {
   });
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
+    setScrapedData(null)
     setSubmittedText(inputText)
     setLoading(true)
     setError('')
@@ -26,14 +27,15 @@ function App() {
       })
       
       if (!response.ok) {
-        throw new Error('Failed to fetch data')
+        console.error('Error fetching scraped data:', response)
+        throw new Error(response.error);
       }
       
       const data = await response.json()
       setScrapedData(data?.structured)
     } catch (error) {
-      console.error('Error fetching scraped data:', error)
-      setError('Failed to fetch data. Please check the URL and try again.')
+      console.error('Error fetching scraped data:', error);
+      setError("The model is overloaded. Please try again later")
     } finally {
       setLoading(false)
     }
@@ -99,9 +101,24 @@ function App() {
 
         {loading && (
           <p style={{ marginTop: '16px', color: '#666' }}>
-            Scraping data, It will take 2 to 3 minutes. please wait...
+            Scraping data, It will take a minutes. please wait...
           </p>
         )}
+
+        {!loading && !error && (
+        <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '16px'}}>
+          <p>List of Public url for test the app</p>
+          <ul style={{  paddingLeft: '0', textAlign:"start" }}>
+            <li><a href="https://www.bbc.com/news/world-60525350">https://www.bbc.com/news/world-60525350</a></li>
+            <li><a href="https://edition.cnn.com/2024/05/22/tech/apple-ai-announcement">https://edition.cnn.com/2024/05/22/tech/apple-ai-announcement</a></li>
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript">https://developer.mozilla.org/en-US/docs/Web/JavaScript</a></li>
+            <li><a href="https://www.apple.com/iphone/">https://www.apple.com/iphone/</a></li>
+
+          </ul>
+        </div>
+        )}
+       
+
         
         {submittedText && (
           <p style={{ marginTop: '16px', fontSize: '14px', color: '#666' }}>
@@ -182,13 +199,6 @@ function App() {
 
           {/* Key Points Table */}
          <Table scrapedData={scrapedData} filteredKeyPoints={filteredKeyPoints} />
-
-          {/* Source Info */}
-          {/* <div style={{ marginTop: '16px', fontSize: '12px', color: '#666' }}>
-            <strong>Source:</strong> <a href={scrapedData.source_url} target="_blank" rel="noopener noreferrer">
-              {scrapedData.source_url}
-            </a>
-          </div> */}
         </div>
       )}
     </>
